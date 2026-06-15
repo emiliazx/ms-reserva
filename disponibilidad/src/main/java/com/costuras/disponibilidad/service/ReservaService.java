@@ -31,18 +31,13 @@ public class ReservaService {
     private final AgendaClient agendaClient;
     private final NotificacionesClient notificacionesClient;
 
-    // CREAR RESERVA 
-
-    
-     //Agenda una cita para el cliente autenticado.
-     //Valida contra MS-Agenda que el slot esté disponible y no ocupado.
+   
      
     @Transactional
     public ReservaResponse crearReserva(CrearReservaRequest req, UsuarioPrincipal principal) {
         LocalDate fecha     = req.getFecha();
         LocalTime horaInicio = req.getHoraInicio();
-            // Validar disponibilidad en MS-Agenda
-            // Verificar duplicados
+            
 
         if (!agendaClient.esSlotValido(fecha, horaInicio)) {
             throw new IllegalArgumentException(
@@ -55,15 +50,15 @@ public class ReservaService {
                 "El horario " + horaInicio + " del " + fecha + " ya está reservado");
         }
 
-        // Obtener duración del slot desde MS-Agenda
+        
         int duracion = agendaClient.obtenerDuracionSlot(fecha, horaInicio);
         LocalTime horaFin = horaInicio.plusMinutes(duracion);
 
-        //  Crear la reserva
+       
         Reserva reserva = Reserva.builder()
                 .idCliente(principal.getId())
-                .emailCliente(req.getEmailCliente())     // ← así
-                .nombreCliente(req.getNombreCliente()) // nombre viene del token (username = email)
+                .emailCliente(req.getEmailCliente())     
+                .nombreCliente(req.getNombreCliente()) 
                 .fecha(fecha)
                 .horaInicio(horaInicio)
                 .horaFin(horaFin)
@@ -74,13 +69,13 @@ public class ReservaService {
         reserva = reservaRepo.save(reserva);
         log.info("Reserva {} creada para cliente {} en {}-{}", reserva.getId(), principal.getId(), fecha, horaInicio);
 
-        // Notificar a MS-Notificaciones (no-blocking)
+       
         notificacionesClient.notificarCita(buildNotificacion(reserva, "AGENDADA"));
 
         return toResponse(reserva);
     }
 
-    //MIS RESERVAS 
+ 
 
     public List<ReservaResponse> misReservas(UsuarioPrincipal principal) {
         return reservaRepo.findByIdClienteOrderByFechaDescHoraInicioDesc(principal.getId())
@@ -96,10 +91,9 @@ public class ReservaService {
         return toResponse(reserva);
     }
 
-    //  CANCELAR RESERVAS
+    
 
     
-     //Cancela una reserva propia (cualquier cliente autenticado).
     @Transactional
     public ReservaResponse cancelarReserva(Integer id, CancelarReservaRequest req, UsuarioPrincipal principal) {
         Reserva reserva = reservaRepo.findById(id)
@@ -127,7 +121,6 @@ public class ReservaService {
         return toResponse(reserva);
     }
 
-    //ADMIN: cancelar cualquier reserva 
 
     @Transactional
     public ReservaResponse cancelarReservaAdmin(Integer id, CancelarReservaRequest req) {
@@ -148,7 +141,7 @@ public class ReservaService {
         return toResponse(reserva);
     }
 
-    //ADMIN: listar reservas por fecha o rango 
+ 
 
     public List<ReservaResponse> listarReservasPorFecha(LocalDate fecha) {
         return reservaRepo.findByFechaAndEstadoNotOrderByHoraInicioAsc(fecha, EstadoReserva.CANCELADA)
@@ -160,17 +153,13 @@ public class ReservaService {
                 .stream().map(this::toResponse).toList();
     }
 
-    //  ENDPOINT INTERNO: horas ocupadas 
-
-    
-     // Usado por MS-Agenda para calcular slots libres en la vista de disponibilidad.
      
     public List<String> obtenerHorasOcupadas(LocalDate fecha) {
         return reservaRepo.findHorasOcupadasByFecha(fecha)
                 .stream().map(LocalTime::toString).toList();
     }
 
-    // MAPPERS 
+   
 
     private ReservaResponse toResponse(Reserva r) {
         return ReservaResponse.builder()

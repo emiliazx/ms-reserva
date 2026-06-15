@@ -12,9 +12,6 @@ import java.util.List;
 import java.util.Map;
 
 
- //Cliente HTTP hacia MS-Agenda.
- //Consulta si un slot está disponible según la configuración de horarios,
- //festivos y bloqueos manuales.
  
 @Slf4j
 @Component
@@ -45,7 +42,7 @@ public class AgendaClientImpl implements AgendaClient {
             );
         } catch (Exception e) {
             log.warn("No se pudo consultar MS-Agenda para validar slot: {}", e.getMessage());
-            // Si MS-Agenda no responde, se permite la reserva (fail-open)
+            
             return true;
         }
     }

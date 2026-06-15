@@ -11,7 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
-//Payload que se envía a MS-Notificaciones cuando se agenda o cancela una cita.
+
 
 @Data
 @Builder
@@ -28,7 +28,7 @@ public class NotificacionCitaRequest {
     private LocalTime horaFin;
     private String descripcion;
 
-            //AGENDADA | CANCELADA | RECORDATORIO 
+            
     private String tipoNotificacion;
     private String motivoCancelacion;
 }

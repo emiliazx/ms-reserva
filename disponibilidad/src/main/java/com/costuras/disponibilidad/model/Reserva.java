@@ -37,7 +37,7 @@ public class Reserva {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    /** ID del cliente que agendó */
+   
     @Column(nullable = false)
     private Integer idCliente;
 
@@ -56,7 +56,7 @@ public class Reserva {
     @Column(nullable = false)
     private LocalTime horaFin;
 
-    /** Motivo o descripción de la cita (opcional) */
+    
     private String descripcion;
 
     @Enumerated(EnumType.STRING)
@@ -66,10 +66,10 @@ public class Reserva {
     @CreationTimestamp
     private LocalDateTime creadoEn;
 
-    /** Fecha/hora en que se canceló (si aplica) */
+   
     private LocalDateTime canceladoEn;
 
-    /** Quién canceló: CLIENTE o ADMIN */
+  
     private String canceladoPor;
 
     private String motivoCancelacion;

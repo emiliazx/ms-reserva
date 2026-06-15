@@ -20,11 +20,8 @@ public class ReservaController {
 
     private final ReservaService reservaService;
 
-    //  CLIENTE 
+  
 
-    
-      //POST /reservas — agendar una cita.
-      //Valida disponibilidad con MS-Agenda.
      
     @PostMapping
     public ResponseEntity<ReservaResponse> crearReserva(
@@ -35,7 +32,7 @@ public class ReservaController {
                 .body(reservaService.crearReserva(req, principal));
     }
 
-    //GET /reservas/mis-citas — mis reservas históricas.
+   
     
     @GetMapping("/mis-citas")
     public ResponseEntity<List<ReservaResponse>> misReservas(Authentication auth) {
@@ -44,7 +41,7 @@ public class ReservaController {
     }
 
     
-     //GET /reservas/{id} — ver detalle de una reserva propia.
+    
      
     @GetMapping("/{id}")
     public ResponseEntity<ReservaResponse> obtenerReserva(
@@ -55,7 +52,7 @@ public class ReservaController {
     }
 
     
-     // DELETE /reservas/{id} — cancelar mi reserva.
+    
      
     @DeleteMapping("/{id}")
     public ResponseEntity<ReservaResponse> cancelarReserva(
@@ -67,12 +64,7 @@ public class ReservaController {
         return ResponseEntity.ok(reservaService.cancelarReserva(id, req, principal));
     }
 
-    // ENDPOINT INTERNO (usado por MS-Agenda)
-
     
-     // GET /reservas/horas-ocupadas?fecha=2025-07-15
-    // Lo consume MS-Agenda para calcular qué slots están libres.
-     //Requiere JWT válido (comunicación interna entre microservicios).
     
     @GetMapping("/horas-ocupadas")
     public ResponseEntity<List<String>> horasOcupadas(
@@ -80,9 +72,7 @@ public class ReservaController {
         return ResponseEntity.ok(reservaService.obtenerHorasOcupadas(fecha));
     }
 
-    // ADMIN 
-
-    // GET /reservas/admin/fecha?fecha=2025-07-15 — reservas activas de un día.
+    
     
     @GetMapping("/admin/fecha")
     public ResponseEntity<List<ReservaResponse>> reservasPorFecha(
@@ -90,7 +80,7 @@ public class ReservaController {
         return ResponseEntity.ok(reservaService.listarReservasPorFecha(fecha));
     }
 
-    //GET /reservas/admin/rango?desde=2025-07-01&hasta=2025-07-31 — reservas en rango.
+   
 
     @GetMapping("/admin/rango")
     public ResponseEntity<List<ReservaResponse>> reservasPorRango(
@@ -99,7 +89,7 @@ public class ReservaController {
         return ResponseEntity.ok(reservaService.listarReservasPorRango(desde, hasta));
     }
 
-     //DELETE /reservas/admin/{id} — cancelar cualquier reserva (admin).
+    
     
     @DeleteMapping("/admin/{id}")
     public ResponseEntity<ReservaResponse> cancelarReservaAdmin(
