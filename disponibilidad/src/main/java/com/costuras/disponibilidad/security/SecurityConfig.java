@@ -26,9 +26,13 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.DELETE, "/reservas/admin/**").hasAuthority("ADMIN")
                 .requestMatchers(HttpMethod.GET,    "/reservas/admin/**").hasAuthority("ADMIN")
-                
                 .requestMatchers(HttpMethod.GET, "/reservas/horas-ocupadas").authenticated()
-                
+                .requestMatchers(
+                        "/auth/**",
+                        "/v3/api-docs/**",
+                        "/swagger-ui/**",
+                        "/swagger-ui.html"
+                ).permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
